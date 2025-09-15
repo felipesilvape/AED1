@@ -1,48 +1,30 @@
-//FELIPE PEREIRA SILVA - AED1 - ARLINDO
+// FELIPE PEREIRA SILVA - ARLINDO - AED1
 //188204
 
 #include <stdio.h>
 #include <stdlib.h>
 
 int main(void) {
-    // N alocado dinamicamente
-    int *N = malloc(sizeof(int));
-    scanf("%d", N);
+    int N;
 
-    // Vetor dinâmico
-    int *vetor = malloc((*N) * sizeof(int));
-    if (vetor == NULL) { free(N); return 1; }
+    scanf("%d", &N);
+    int X[N];
 
-    int *ptr = vetor;                 // iterador começando no primeiro elemento
-    int *end = vetor + (*N);          // ponteiro para "uma-passa-além" do último
-
-    // leitura usando ponteiros
-    while (ptr < end) {
-        if (scanf("%d", ptr) != 1) {  // lê direto para onde ptr aponta
-            free(vetor); free(N);
-            return 1;
-        }
-        ptr++; // avançar para a próxima posição
+    for(int i = 0; i < N; i++) {
+        scanf("%d", &X[i]);
     }
 
-    int *menor = vetor;               // aponta para o menor (começa no primeiro)
-    int *p = vetor + 1;               // percorre do segundo elemento até end
-    int *pos = malloc(sizeof(int));   // armazena posição em memória alocada
-    if (pos == NULL) { free(vetor); free(N); return 1; }
-    *pos = 0;                         // começa com posição 0
-
-    for (; p < end; ++p) {
-        if (*p < *menor) {
-            menor = p;
-            *pos = (int)(p - vetor); // diferença de ponteiros -> índice
+    int *menor = &X[0];
+    for(int i = 0; i < N; i++) {
+        if(*menor > X[i]) {
+            menor = &X[i];
         }
     }
+
+    int *pos = menor;
 
     printf("Menor valor: %d\n", *menor);
-    printf("Posicao: %d\n", *pos);
+    printf("Posicao: %d\n", (int)(pos - X));
 
-    free(pos);
-    free(vetor);
-    free(N);
     return 0;
 }
