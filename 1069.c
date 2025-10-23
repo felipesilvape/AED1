@@ -15,10 +15,10 @@ int main() {
         // Percorre cada caractere na sequência
         for (int i = 0; i < strlen(linha); i++) {
             if (linha[i] == '<') {
-                pilha++;
+                pilha++; 
             } else if (linha[i] == '>' && pilha > 0) {
-                pilha--; // Retira um '<' da pilha, formando um diamante
-                diamantes++; // Incrementa o contador de diamantes
+                pilha--; // Usa um '<' da pilha
+                diamantes++; // Forma um diamante
             }
         }
 
