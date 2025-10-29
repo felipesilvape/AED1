@@ -1,64 +1,95 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Node{
-    int val;
-    struct Node* next;
-} Node;
+#define MAX 1000
 
-typedef struct Stack {
-    Node* top;
-} Stack;
+// Estrutura para representar uma pilha
+typedef struct {
+    int dados[MAX];
+    int topo;
+} Pilha;
 
-Node* create_node(int x, Node* prox) {
-    Node* newNode = (Node*)malloc(sizeof(Node));
-    newNode->val = x;
-    newNode->next = prox;
-    return newNode;
+// Funções para manipular a pilha
+void inicializar(Pilha *p) {
+    p->topo = -1;
 }
 
-void pop(Stack *curr) {
-    if(curr->top == NULL) return;
-    Node* trash = curr->top;
-    curr->top = curr->top->next;
-    free(trash);
+int vazia(Pilha *p) {
+    return p->topo == -1;
 }
 
-void push(Stack* curr, int val) {
-    Node* newNode = create_node(val, curr->top);
-    curr->top = newNode;
+int cheia(Pilha *p) {
+    return p->topo == MAX - 1;
 }
 
-int top(Stack *curr) {
-    if(curr->top == NULL) return 0;
-    return curr->top->val;
+void empilhar(Pilha *p, int valor) {
+    if (!cheia(p)) {
+        p->dados[++(p->topo)] = valor;
+    }
+}
+
+int desempilhar(Pilha *p) {
+    if (!vazia(p)) {
+        return p->dados[(p->topo)--];
+    }
+    return -1;
+}
+
+int topo(Pilha *p) {
+    if (!vazia(p)) {
+        return p->dados[p->topo];
+    }
+    return -1;
 }
 
 int main() {
-    int n;
-    while(scanf("%d", &n) == 1 && n != 0) {
-        int first;
-        int* target = (int*)malloc(n * sizeof(int));
-        while(scanf("%d", &first) == 1 && first != 0) {
-            target[0] = first;
-            for(int i = 0; i < n; i++) {
-                scanf("%d", &target[i]);
+    int N;
+    int objetivo[MAX];
+    
+    while (scanf("%d", &N) && N != 0) {
+        
+        while (1) {
+            // Lê a primeira posição para verificar se é 0
+            scanf("%d", &objetivo[0]);
+            if (objetivo[0] == 0) {
+                printf("\n");
+                break;
             }
-
-            Stack wagons = {NULL};
-            int ptr = 0;
-            for (int i = 1; i <= n; i++) {
-                push(&wagons, i);
-                while (ptr < n && top(&wagons) == target[ptr]) {
-                    pop(&wagons);
-                    ptr++;
+            
+            for (int i = 1; i < N; i++) {
+                scanf("%d", &objetivo[i]);
+            }
+            
+            Pilha estacao;
+            inicializar(&estacao);
+            int proximo = 1; 
+            int possivel = 1; 
+            
+            for (int i = 0; i < N; i++) {
+                int vagaoDesejado = objetivo[i];
+                
+                // Empilha vagões até encontrar o vagão desejado
+                while (proximo <= N && (vazia(&estacao) || topo(&estacao) != vagaoDesejado)) {
+                    empilhar(&estacao, proximo);
+                    proximo++;
+                }
+                
+                // Se o topo da pilha é o vagão desejado, desempilha
+                if (!vazia(&estacao) && topo(&estacao) == vagaoDesejado) {
+                    desempilhar(&estacao);
+                } else {
+                    possivel = 0;
+                    break;
                 }
             }
             
-            printf(top(&wagons) == 0 ? "Yes\n" : "No\n");
+            if (possivel) {
+                printf("Yes\n");
+            } else {
+                printf("No\n");
+            }
         }
-        printf("\n");
-        free(target);
     }
+    
     return 0;
 }
